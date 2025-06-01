@@ -133,21 +133,19 @@ class ProductDetailPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "ລຸ່ນ : " + product['brand'] ?? "No description",
+                              "ລຸ່ນ : " + product['brand'],
                               style: const TextStyle(color: Colors.black),
                             ),
                             Text(
-                              "ສີ : " + product['color'] ?? "No description",
+                              "ສີ : " + product['color'],
                               style: const TextStyle(color: Colors.black),
                             ),
                             Text(
-                              "ຄວາມຈຳ : " + product['storage'] ??
-                                  "No description",
+                              "ຄວາມຈຳ : " + product['storage'],
                               style: const TextStyle(color: Colors.black),
                             ),
                             Text(
-                              "ແບັດເຕີລີ່ : " + product['battery'] ??
-                                  "No description",
+                              "ແບັດເຕີລີ່ : " + product['battery'],
                               style: const TextStyle(color: Colors.black),
                             ),
                           ],
