@@ -1,5 +1,6 @@
 // ignore_for_file: use_super_parameters, prefer_interpolation_to_compose_strings
 
+import 'package:ecommerce_mobile_shop/api/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -26,7 +27,6 @@ class ProductDetailPage extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(8.0, 40, 8.0, 8.0),
         child: Column(
           children: [
-            // รูปสินค้า + ปุ่มย้อนกลับและหัวใจ
             Stack(
               children: [
                 ClipRRect(
@@ -67,7 +67,7 @@ class ProductDetailPage extends StatelessWidget {
               ],
             ),
 
-            // เนื้อหา
+            // ເນື້ອຫາ container
             Expanded(
               child: Container(
                 padding: const EdgeInsets.all(20),
@@ -79,7 +79,6 @@ class ProductDetailPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // ชื่อสินค้า + ราคา
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -90,7 +89,7 @@ class ProductDetailPage extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          
+
                           Text(
                             formatKip(product['price']),
                             style: const TextStyle(
@@ -125,8 +124,6 @@ class ProductDetailPage extends StatelessWidget {
                           fontSize: 16,
                         ),
                       ),
-                      const SizedBox(height: 8),
-
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
@@ -151,7 +148,129 @@ class ProductDetailPage extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const Text(
+                        "ທ່ານອາດຈະສົນໃຈ",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        height: 180,
+                        child: FutureBuilder<List<dynamic>>(
+                          future: ApiService.getProducts(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Center(
+                                child: Text('Error: ${snapshot.error}'),
+                              );
+                            } else if (!snapshot.hasData ||
+                                snapshot.data!.isEmpty) {
+                              return const Center(
+                                child: Text('No products found'),
+                              );
+                            } else {
+                              final products = snapshot.data!;
+                              return ListView.separated(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: products.length,
+                                separatorBuilder:
+                                    (_, __) => const SizedBox(width: 12),
+                                itemBuilder: (context, index) {
+                                  final product = products[index];
+
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (_) => ProductDetailPage(
+                                                product: product,
+                                              ),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      width: 140,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        color: Colors.grey.shade100,
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Stack(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                child:
+                                                    product['image_url'] !=
+                                                                null &&
+                                                            product['image_url'] !=
+                                                                ''
+                                                        ? Image.network(
+                                                          product['image_url'],
+                                                          height: 120,
+                                                          width: 140,
+                                                          fit: BoxFit.cover,
+                                                        )
+                                                        : Container(
+                                                          height: 120,
+                                                          width: 140,
+                                                          color:
+                                                              Colors
+                                                                  .grey
+                                                                  .shade300,
+                                                          child: const Icon(
+                                                            Icons
+                                                                .image_not_supported,
+                                                          ),
+                                                        ),
+                                              ),
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  product['model'] ??
+                                                      'No Title',
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 4),
+                                                Text(
+                                                  formatKip(product['price']),
+                                                  style: const TextStyle(
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),

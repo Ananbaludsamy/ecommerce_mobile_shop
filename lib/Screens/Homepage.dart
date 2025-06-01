@@ -528,60 +528,70 @@ class HomePage extends StatelessWidget {
               separatorBuilder: (_, __) => const SizedBox(width: 12),
               itemBuilder: (context, index) {
                 final product = products[index];
-                // สมมติ product มี key 'title', 'price', 'image'
-                return Container(
-                  width: 140,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Colors.grey.shade100,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child:
-                                product['image_url'] != null &&
-                                        product['image_url'] != ''
-                                    ? Image.network(
-                                      product['image_url'],
-                                      height: 120,
-                                      width: 140,
-                                      fit: BoxFit.cover,
-                                    )
-                                    : Container(
-                                      height: 120,
-                                      width: 140,
-                                      color: Colors.grey.shade300,
-                                      child: const Icon(
-                                        Icons.image_not_supported,
-                                      ),
-                                    ),
-                          ),
-                        ],
+
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ProductDetailPage(product: product),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                    );
+                  },
+                  child: Container(
+                    width: 140,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: Colors.grey.shade100,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Stack(
                           children: [
-                            Text(
-                              product['model'] ?? 'No Title',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              formatKip(product['price']),
-                              style: const TextStyle(color: Colors.grey),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child:
+                                  product['image_url'] != null &&
+                                          product['image_url'] != ''
+                                      ? Image.network(
+                                        product['image_url'],
+                                        height: 120,
+                                        width: 140,
+                                        fit: BoxFit.cover,
+                                      )
+                                      : Container(
+                                        height: 120,
+                                        width: 140,
+                                        color: Colors.grey.shade300,
+                                        child: const Icon(
+                                          Icons.image_not_supported,
+                                        ),
+                                      ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                product['model'] ?? 'No Title',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                formatKip(product['price']),
+                                style: const TextStyle(color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -603,6 +613,7 @@ class HomePage extends StatelessWidget {
       final doublePrice = double.tryParse(price.toString()) ?? 0.0;
       return formatCurrency.format(doublePrice);
     }
+
     return FutureBuilder<List<dynamic>>(
       future: ApiService.getProducts(),
       builder: (context, snapshot) {
@@ -673,9 +684,9 @@ class HomePage extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                              formatKip(product['price']),
-                              style: const TextStyle(color: Colors.grey),
-                            ),
+                            formatKip(product['price']),
+                            style: const TextStyle(color: Colors.grey),
+                          ),
                         ],
                       ),
                     ),
